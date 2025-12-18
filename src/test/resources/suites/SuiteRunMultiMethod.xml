@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="MultiMethod" verbose="1">
+    <test name="Run Multi Method">
+        <classes>
+            <class name="testcases.LeadsTest">
+                <methods>
+                    <include name="testAddAndVerifyLead"/>
+                    <include name="testVerifyEditLead"/>
+                    <include name="testEditLead"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

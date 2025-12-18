@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="CRM Test" verbose="1">
+    <test name="TestLead">
+        <classes>
+            <class name="testcases.LeadsTest">
+                <methods>
+                    <include name="testAddAndVerifyLead"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
