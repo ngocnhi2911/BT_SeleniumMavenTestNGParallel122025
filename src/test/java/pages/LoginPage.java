@@ -1,6 +1,7 @@
 package pages;
 
 import drivers.DriverManager;
+import helpers.PropertiesHelper;
 import keywords.WebUI;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -50,7 +51,7 @@ public class LoginPage {
     }
 
     public void navigateToLoginPage(){
-        WebUI.openURL(url);
+        WebUI.openURL(PropertiesHelper.getValue("url"));
         WebUI.waitForPageLoaded();
     }
     public void loginCRM(String email, String password) {
@@ -63,8 +64,8 @@ public class LoginPage {
     public DashboardPage loginCRM(){
         // thay từ khóa "void" thành tên class tương ứng với tên trang mà mk chuyển hướng đến (DashboardPage)
         navigateToLoginPage();
-        enterEmail("admin@example.com");
-        enterPassword("123456");
+        enterEmail(PropertiesHelper.getValue("email"));
+        enterPassword(PropertiesHelper.getValue("password"));
         clickButtonLogin();
         verifyLoginSuccess();
 

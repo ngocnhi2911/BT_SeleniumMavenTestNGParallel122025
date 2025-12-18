@@ -1,6 +1,7 @@
 package keywords;
 
 import drivers.DriverManager;
+import helpers.PropertiesHelper;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -15,9 +16,11 @@ public class WebUI {
 
     // Khai báo static hết để lấy tên class.tên hàm cho dễ (không cần khai báo đối tượng class0
     // Biến static mới mang vô hàm static dùng được
-    private static int WAIT_TIMEOUT = 10;
-    private static double STEP_TIME = 1;
-    private static int PAGE_LOAD_TIMEOUT = 20;
+
+    // phải ép kiểu Integer.parseInt do getValue mặc định trả về kiểu chuỗi String, mà WAIT_TIMEOUT lại trả về kiểu int
+    private static int WAIT_TIMEOUT = Integer.parseInt(PropertiesHelper.getValue("wait_timeout"));
+    private static double STEP_TIME = Double.parseDouble(PropertiesHelper.getValue("step_timeout"));
+    private static int PAGE_LOAD_TIMEOUT = Integer.parseInt(PropertiesHelper.getValue("page_load_timeout"));
  //   private static WebDriver driver;  //driver này trở thành driver toàn cục, k cần phải khai báo WebDriver driver ở các hàm nữa mà có thể sử dụng thẳng luôn
 
     

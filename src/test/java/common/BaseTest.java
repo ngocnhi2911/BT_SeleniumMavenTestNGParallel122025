@@ -2,26 +2,40 @@ package common;
 
 
 import drivers.DriverManager;
+import helpers.PropertiesHelper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Optional;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 
 public class BaseTest {
     public SoftAssert softAssert;
 
   //   private WebDriver driver;  // driver toàn cục, đơn luồng
+    @BeforeSuite
+    public void setupBeforeSuite(){
+        PropertiesHelper.loadAllFiles();
+    }
 
     @BeforeMethod
     @Parameters({"browser"})
     public void createDriver(@Optional("chrome") String browserName) throws InterruptedException {
         // gán @Optional("chrome"): cho trường hợp lỡ như quên truyền tham số thì nó sẽ lấy giá trị mặc định = Chrome
 
+        //Nếu file properties có giá trị, nó sẽ ưu tiên lấy giá trị từ file properties
+        //Nếu file properties không có giá trị hoặc bị null, nó sẽ lấy giá trị browserName
+        if(PropertiesHelper.getValue("browser").isEmpty() || PropertiesHelper.getValue("browser") == null){
+            browserName = browserName;
+        }else {
+            browserName = PropertiesHelper.getValue("browser");
+        }
+
+        //Nếu như PropertiesHelper khác rỗng và khác null (nghĩa là có giá trị) --> sẽ đọc data từ properties
+//        if(!(PropertiesHelper.getValue("browser").isEmpty()) || !(PropertiesHelper.getValue("browser") != null)){
+//            browserName = PropertiesHelper.getValue("browser");
+//        }
 
         WebDriver driver; //Khai báo driver cục bộ
 
