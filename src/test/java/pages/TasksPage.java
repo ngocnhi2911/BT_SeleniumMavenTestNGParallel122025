@@ -2,6 +2,7 @@ package pages;
 
 import drivers.DriverManager;
 import keywords.WebUI;
+import models.TaskDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -15,94 +16,128 @@ import java.util.List;
 public class TasksPage {
     private By url = By.xpath("https://crm.anhtester.com/admin/authentication");
 
-    //Locators for Login Page
-    private By headerLoginPage = By.xpath("//h1[normalize-space() = 'Login']");
-    private By inputEmail = By.xpath("//input[@id='email']");
-    private By inputPassword = By.xpath("//input[@id='password']");
-    private By buttonLogin = By.xpath("//button[normalize-space()='Login']");
-    private By checkboxRememberMe = By.xpath("//input[@id='remember']");
-    private By labelRememberMe = By.xpath("//label[@for='remember']");
-    private By linkForgotPassword = By.xpath("//a[normalize-space()='Forgot Password?']");
-    private By errorMessageInvalidEmailOrPassword = By.xpath("//div[@id='alerts']/div");
-    private By alertErrorMessageEmailRequired = By.xpath("//div[text()='The Email Address field is required.']");
-    private By alertErrorMessagePasswordRequired = By.xpath("//div[text()='The Password field is required.']");
+    //Locator Tasks Page
+    private By buttonNewTask = By.xpath("//a[normalize-space()='New Task']");
+    private By buttonTasksOverview = By.xpath("//a[normalize-space()='Tasks Overview']");
+    private By iconFilter = By.xpath("//div[@id='vueApp']/div[@data-title='Filter by']");
+    private By iconSwitchToKanban = By.xpath("//a[normalize-space()='New Task']/following-sibling::a[@data-title='Switch to Kanban']");
+    private By headerTasksSummary = By.xpath("//span[normalize-space()='Tasks Summary']");
 
-    //Locators for menu Tasks
-    private By menuTasks = By.xpath("//ul[@id='side-menu']//span[@class='menu-text' and normalize-space()='Tasks']");
+    //label status of task
+    private By labelTaskTotalNotStarted = By.xpath("//span[normalize-space()='Not Started']/preceding-sibling::span");
+    private By labelTaskTotalInProgress = By.xpath("//span[normalize-space()='In Progress']/preceding-sibling::span");
+    private By labelTaskTotalTesting = By.xpath("//span[normalize-space()='Testing']/preceding-sibling::span");
+    private By labelTaskTotalAwaitingFeedback = By.xpath("//span[normalize-space()='Awaiting Feedback']/preceding-sibling::span");
+    private By labelTaskTotalComplete = By.xpath("//span[normalize-space()='Complete']/preceding-sibling::span");
 
-    //Locators for Task Page
-    private By urlTasks = By.xpath("https://crm.anhtester.com/admin/tasks");
-    private By headerTasksPage = By.xpath("//span[normalize-space()='Tasks Summary']");
-    private By buttonNewTasks = By.xpath("//a[normalize-space()='New Task']");
+    //button
+    private By dropdownDatatableTasksLength = By.xpath("//div[@id='tasks_length']/descendant::select");
+    private By buttonExport = By.xpath("//div[@id='tasks_length']/following-sibling::div/button[normalize-space()='Export']");
+    private By buttonBulkActions = By.xpath("//div[@id='tasks_length']/following-sibling::div/button[normalize-space()='Bulk Actions']");
+    private By buttonReload = By.xpath("//div[@id='tasks_length']/following-sibling::div/button[contains(@class,'btn-dt-reload')]");
 
+    //input search
+    private By inputSearchTasks = By.xpath("//div[@id='tasks_filter']/descendant::input[@type='search']");
 
-    private By inputSearch = By.xpath("//div[@id='tasks_filter']//input[@type='search']");
-    // Tìm kiếm phần tử đầu tiên của bảng
-    private By firstRowItemTasks = By.xpath("//table[@id='tasks']//tbody/tr[1]/td[3]/a");
-    private By iconCloseProfile = By.xpath("//div[@id='task-modal']//button[@class='close']");
+    //table
+    private By checkboxCheckAll = By.xpath("//table[@id='tasks']/thead//input[@id='mass_select_all']");
+    private By headerId = By.xpath("//table[@id='tasks']/thead//th[normalize-space()='#']");
+    private By headerName = By.xpath("//table[@id='tasks']/thead//th[normalize-space()='Name']");
+    private By headerStatus = By.xpath("//table[@id='tasks']/thead//th[normalize-space()='Status']");
+    private By headerStartDate = By.xpath("//table[@id='tasks']/thead//th[normalize-space()='Start Date']");
+    private By headerDueDate = By.xpath("//table[@id='tasks']/thead//th[normalize-space()='Due Date']");
+    private By headerAssignedTo = By.xpath("//table[@id='tasks']/thead//th[normalize-space()='Assigned to']");
+    private By headerTags = By.xpath("//table[@id='tasks']/thead//th[normalize-space()='Tags']");
+    private By headerPriority = By.xpath("//table[@id='tasks']/thead//th[normalize-space()='Priority']");
 
+    private By getFirstRowItemTaskName(String taskName) {
+        By xpath = By.xpath("//table[@id='tasks']/descendant::a[normalize-space()='" + taskName + "']");
+        return xpath;
+    }
 
-    private By firstRow = By.xpath("//table[@id='tasks']//tbody/tr[1]/td[3]");
+    //button
+    private By buttonStartTimer(String tasksName) {
+        By xpath = By.xpath("//table[@id='tasks']/descendant::a[normalize-space()='" + tasksName + "']/following-sibling::div//a[normalize-space()='Start Timer']");
+        return xpath;
+    }
 
-    private By linkEdit = By.xpath("//table[@id='tasks']/tbody/tr[1]//a[normalize-space()='Edit']");
-    private By inputEditTag = By.xpath("//div[@id='inputTagsWrapper']/input[@id='tags']");
+    private By buttonEdit(String tasksName) {
+        By xpath = By.xpath("//table[@id='tasks']/descendant::a[normalize-space()='" + tasksName + "']/following-sibling::div//a[normalize-space()='Edit']");
+        return xpath;
+    }
 
-    // Locators for Add New Leads Page
-    private By headerAddNewTask = By.xpath("//div[@id='_task_modal']//h4[normalize-space()='Add new task']");
+    private By buttonDelete(String tasksName) {
+        By xpath = By.xpath("//table[@id='tasks']/descendant::a[normalize-space()='" + tasksName + "']/following-sibling::div//a[normalize-space()='Delete']");
+        return xpath;
+    }
 
+    private By labelTasksInfo = By.xpath("//div[@id='tasks_info']");
+    private By buttonPrevious = By.xpath("//div[@id='tasks_paginate']//li[@id='tasks_previous']");
+
+    private By buttonNumberOfPage(String number) {
+        By xpath = By.xpath("//div[@id='tasks_paginate']/descendant::a[normalize-space()='" + number + "']");
+        return xpath;
+    }
+
+    private By buttonNext = By.xpath("//div[@id='tasks_paginate']//li[@id='tasks_next']");
+    private By dropdownNumberOfPage = By.xpath("//div[@id='colvis']/following-sibling::div/select[@id='dt-page-jump-tasks']");
+
+    //Locator Add New Task
+    private By headerAddNewTask = By.xpath("//h4[@id='myModalLabel']");
+    //checkbox
     private By checkboxPublic = By.xpath("//input[@id='task_is_public']");
-    private By labelPublic = By.xpath("//input[@id='task_is_public']/following-sibling::label");
+    private By labelCheckboxPublic = By.xpath("//label[normalize-space()='Public']");
+    private By checkboxBillable = By.xpath("//input[@id='task_is_billable']");
+    private By labelCheckboxBillable = By.xpath("//label[@for='task_is_billable']");
+    //attach files
+    private By textlinkAttachFiles = By.xpath("//a[normalize-space()='Attach Files']");
+    private By iconAddMoreFileAttachment = By.xpath("//div[@id='new-task-attachments']/descendant::button[contains(@class,'add_more_attachments')]");
 
-    private By checkboxBillable= By.xpath("//input[@id='task_is_billable']");
-    private By labelBillable = By.xpath("//input[@id='task_is_billable']/following-sibling::label");
+    private By inputChooseFile(String number) {
+        By xpath = By.xpath("//div[@id='new-task-attachments']/descendant::input[@type='file' and @name='attachments[" + number + "]']");
+        return xpath;
+    }
 
-    private By linkAttachFiles = By.xpath("//div[@id='new-task-attachments']/preceding-sibling::a");
+    private By iconDeleteFileAttachment(String number) {
+        By xpath = By.xpath("//input[@type='file' and @name='attachments[" + number + "]']/following-sibling::span/button[contains(@class,'remove_attachment')]");
+        return xpath;
+    }
 
-    private By labelAttachment = By.xpath("//div[@id='new-task-attachments']/descendant::label");
-    private By inputAttachment = By.xpath("//div[@id='new-task-attachments']/descendant::input[@name='attachments[0]']");
-    private By buttonAddAttachment = By.xpath("//input[@name='attachments[0]']/following::button[contains(@class,'add_more_attachments')]");
-
-    // dùng hàm linh động
-    private By buttonRemoteAttachment = By.xpath("(//div[@class='attachment']//button[contains(@class,'remove_attachment')])[1]");
-
-    private By labelSubject = By.xpath("//div[@app-field-wrapper='name']/label");
-    private By inputSubject= By.xpath("//input[@id='name']");
-
-    private By labelHourlyRate = By.xpath("//div[@app-field-wrapper='hourly_rate']/label[@for='hourly_rate']");
+    //input
+    private By inputSubject = By.xpath("//input[@id='name']");
     private By inputHourlyRate = By.xpath("//input[@id='hourly_rate']");
-
-    private By labelStartDate = By.xpath("//div[@app-field-wrapper='startdate']/label[@for='startdate']");
-    private By inputStartDate = By.xpath("//div[@app-field-wrapper='startdate']//input[@id='startdate']");
-    private By iconStartDate = By.xpath("//input[@id='startdate']/following-sibling::div");
-
-
-    private By labelDueDate = By.xpath("//label[@for='duedate']");
+    private By inputStartDate = By.xpath("//input[@id='startdate']");
     private By inputDueDate = By.xpath("//input[@id='duedate']");
-    private By iconDueDate= By.xpath("//input[@id='duedate']/following-sibling::div");
+    //dropdown Priority
+    private By dropdownPriority = By.xpath("//button[@data-id='priority']");
 
-
-    private By labelPrioryty = By.xpath("//label[@for='priority']");
-    private By dropdownPrioryty = By.xpath("//button[@data-id='priority']");
-    // dùng hàm, vì giá trị có thể thay đổi, dùng hàm để truyền giá trị vào
-    private By getValuePrioryty(String valuePrioryty) {
-        By xpathPrioryty = By.xpath("//button[@data-id='priority']/following-sibling::div//span[normalize-space()='" +valuePrioryty+ "']");
-        return xpathPrioryty;
+    private By getValuePriority(String priority) {
+        By xpath = By.xpath("//button[@data-id='priority']/following-sibling::div/descendant::span[contains(normalize-space(),'" + priority + "')]");
+        return xpath;
     }
 
-
-    private By labelRepeatEvery = By.xpath("//label[@for='repeat_every']");
+    //dropdown Repeat every
     private By dropdownRepeatEvery = By.xpath("//button[@data-id='repeat_every']");
-    private By getValueRepeatEvery(String valueRepeatEvery) {
-        By xpathRepeatEvery = By.xpath("//button[@data-id='repeat_every']/following-sibling::div//span[normalize-space()='" +valueRepeatEvery+ "']");
-        return xpathRepeatEvery;
+
+    private By getValueRepeatEvery(String repeatEvery) {
+        By xpath = By.xpath("//button[@data-id='repeat_every']/following-sibling::div/descendant::span[contains(normalize-space(),'" + repeatEvery + "')]");
+        return xpath;
     }
 
+    private By inputRepeatEveryCustom = By.xpath("//input[@id='repeat_every_custom']");
+    private By dropdownRepeatEveryCustom = By.xpath("//button[@data-id='repeat_type_custom']");
 
-    private By labelTotalCycles = By.xpath("//label[@for='cycles']");
+    private By getValueRepeatEveryCustom(String repeatEveryCustom) {
+        By xpath = By.xpath("//button[@data-id='repeat_type_custom']/following-sibling::div/descendant::span[contains(normalize-space(),'" + repeatEveryCustom + "')]");
+        return xpath;
+    }
+
+    //input Total Cycles
     private By inputTotalCycles = By.xpath("//input[@id='cycles']");
     private By checkboxInfinity = By.xpath("//input[@id='unlimited_cycles']");
+   // private By checkboxInfinity = By.xpath("//input[@id='cycles']/following-sibling::div/descendant::label[@for='unlimited_cycles']");
     private By labelInfinity = By.xpath("//label[@for='unlimited_cycles']");
-
+    //dropdown Related To
 
     private By labelRepeatTo = By.xpath("//label[@for='rel_type']");
     private By dropdownRepeatTo = By.xpath("//button[@data-id='rel_type']");
@@ -150,93 +185,88 @@ public class TasksPage {
     }
     private By iconCloseTag = By.xpath("//a[@class='tagit-close' and normalize-space()='×']");
 
-    private By labelTaskDescription = By.xpath("//div[@id='inputTagsWrapper']/following::p[text()='Task Description']");
     private By inputDescription = By.xpath("//textarea[@id='description']");
-    //private By inputTaskDescription = By.xpath("//iframe[@id='description_ifr']");
-    private By iframeDescription = By.xpath("//body[@id='tinymce']");
+    private By iframeDescription = By.xpath("//iframe[@id='description_ifr']");
+    private By inputDescriptionFrame = By.xpath("//body[@id='tinymce']/p");
 
-    private By buttonClose= By.xpath("//button[@type='submit' and text()='Save']/preceding-sibling::button");
-
-    private By buttonSave = By.xpath("//button[@type='submit' and text()='Save']");
-
-    private By alertErrorMessageRequired = By.xpath("//p[@id='name-error' and text()='This field is required.']");
+    //button
+    private By buttonClose = By.xpath("//div[contains(@id,'task_modal')]/descendant::button[normalize-space()='Close']");
+    private By buttonSave = By.xpath("//div[contains(@id,'task_modal')]/descendant::button[normalize-space()='Save']");
 
     //icon close popup
     private By iconClosePopupTaskDetail(String headerTaskDetail) {
         By xpath = By.xpath("//h4[contains(normalize-space(),'" + headerTaskDetail + "')]/preceding-sibling::button[@aria-label='Close']");
         return xpath;
     }
-    //messsage
-    private By addTaskSuccessMessage = By.xpath("//span[@class='alert-title' and text()='Task added successfully.']");
-    private By updateTaskSuccessMessage = By.xpath("//span[@class='alert-title' and text()='Task updated successfully.']");
 
-    private By getFirstRowItemTaskName(String taskName) {
-        By xpath = By.xpath("//table[@id='tasks']/descendant::a[normalize-space()='" + taskName + "']");
-        return xpath;
+    //messsage
+    private String addTaskSuccessMessage = "Task added successfully.";
+    private String updateTaskSuccessMessage = "Task updated successfully.";
+    private String deleteTaskSuccessMessage = "Task deleted";
+
+    private By getDeleteTaskSuccessMessage() {
+        String xpathDeleteTaskMessage = "//div[@id='alert_float_1']/descendant::span[@class='alert-title' and normalize-space()='" + deleteTaskSuccessMessage + "']";
+        return By.xpath(xpathDeleteTaskMessage);
     }
 
+    private By iconCloseAddTaskSuccessMessage = By.xpath("//span[@class='alert-title' and text()='Task added successfully.']/preceding-sibling::button[@class='close']");
+    private By iconCloseUpdateTaskSuccessMessage = By.xpath("//span[@class='alert-title' and text()='Task updated successfully.']/preceding-sibling::button[@class='close']");
+    private By iconCloseDeleteTaskSuccessMessage = By.xpath("//span[@class='alert-title' and text()='Task deleted']/preceding-sibling::button[@class='close']");
 
-//    public void verifyMenuTask() throws InterruptedException {
-//        //click menu Lead
-//        WebUI.clickElement(menuTasks);
-//        Thread.sleep(1000);
-//
-//        Assert.assertTrue(Action_OLD.checkExistsElement(driver, headerTasksPage), "Không truy cập được vào trang Tasks!");
-//    }
-
+    private By alertErrorMessageRequired = By.xpath("//p[@id='name-error' and text()='This field is required.']");
 
     public void clickBtnAddNewTask(){
         //click button New Lead
         // driver.findElement(By.xpath(buttonNewTasks)).click();
-        WebUI.clickElement(buttonNewTasks);
+        WebUI.clickElement(buttonNewTask);
         Assert.assertTrue(WebUI.checkExistsElement(headerAddNewTask, 2), "Mở popup Add New Task không thành công");
 
     }
 
-    public  void addNewTasks (String subject, String hourlyRate, String startDate, String dueDate, String priority, String repeatEvery,
-                                    String totalCycles, String relatedTo,
-                                    String typeRelatedTo, String assignee, String follower, String tag){
 
-        Actions action = new Actions(DriverManager.getDriver());
+    public void addNewTasks (TaskDTO taskData){
 
-        boolean isSelectedPublic = WebUI.checkSeletedElement(checkboxPublic);
-        if(isSelectedPublic == false)
-        {
-            WebUI.clickElement(labelPublic);
+        //checkbox
+        if (taskData.getCheckedCheckbox() == 1) {
+            WebUI.clickElement(labelCheckboxPublic);
+        }
+        if (taskData.getCheckedCheckbox() == 0) {
+            WebUI.clickElement(labelCheckboxBillable);
         }
 
-
-
-        boolean isSelectedBillable = WebUI.checkSeletedElement(checkboxBillable);
-        if(isSelectedBillable == true)
-        {
-            WebUI.clickElement(labelBillable);
-        }
-
-
-        WebUI.clickElement(inputSubject);
-        WebUI.setTextElement(inputSubject, subject);
-
-        WebUI.clickElement(inputHourlyRate);
+        //input
+        WebUI.setTextElement(inputSubject, taskData.getTaskName());
         WebUI.clearTextElement(inputHourlyRate);
-        WebUI.setTextElement(inputHourlyRate, hourlyRate);
-
-        WebUI.clickElement(inputStartDate);
+        WebUI.setTextElement(inputHourlyRate, taskData.getHourlyRate());
         WebUI.clearTextElement(inputStartDate);
-        WebUI.actionSendKeys(inputStartDate, startDate);
-
-
-        WebUI.clickElement(inputDueDate);
+        WebUI.setTextElement(inputStartDate, taskData.getStartDate());
+        WebUI.clickElement(headerAddNewTask);
         WebUI.clearTextElement(inputDueDate);
-        WebUI.actionSendKeys(inputDueDate, dueDate);
+        WebUI.setTextElement(inputDueDate, taskData.getDueDate());
+        WebUI.clickElement(headerAddNewTask);
 
-        WebUI.actionClick(dropdownPrioryty);
-        WebUI.actionClick(getValuePrioryty(priority));
+        //Priority
+        WebUI.clickElement(dropdownPriority);
+        WebUI.clickElement(getValuePriority(taskData.getPriority()));
 
+        //Repeat every
         WebUI.clickElement(dropdownRepeatEvery);
-        WebUI.clickElement(getValueRepeatEvery(repeatEvery));
-
-
+        WebUI.clickElement(getValueRepeatEvery(taskData.getRepeatEvery()));
+//        if (taskData.getRepeatEvery().equals("Custom")) {
+//            WebUI.clearTextElement(inputRepeatEveryCustom);
+//            WebUI.setTextElement(inputRepeatEveryCustom, taskData.getNumberRepeatEveryCustom());
+//            WebUI.clickElement(dropdownRepeatEveryCustom);
+//            WebUI.clickElement(getValueRepeatEveryCustom(taskData.getTypeRepeatEveryCustom()));
+//        } else if (taskData.getRepeatEvery().equals("Week") || taskData.getRepeatEvery().equals("2 Weeks")
+//                || taskData.getRepeatEvery().equals("1 Months") || taskData.getRepeatEvery().equals("2 Months")
+//                || taskData.getRepeatEvery().equals("3 Months") || taskData.getRepeatEvery().equals("6 Months")
+//                || taskData.getRepeatEvery().equals("1 Year")) {
+//            WebUI.clickElement(checkboxInfinity);
+//            WebUI.clearTextElement(inputTotalCycles);
+//            WebUI.setTextElement(inputTotalCycles, taskData.getTotalCycles());
+//        } else {
+//            System.out.println("The Type Repeat Every is not exist.");
+//        }
         boolean isSelectedInfinity = WebUI.checkSeletedElement(checkboxInfinity);
         if(isSelectedInfinity == true)
         {
@@ -246,67 +276,50 @@ public class TasksPage {
 
         WebUI.clickElement(inputTotalCycles);
         WebUI.clearTextElement(inputTotalCycles);
-        WebUI.setTextElement(inputTotalCycles, totalCycles);
+        WebUI.setTextElement(inputTotalCycles, taskData.getTotalCycles());
 
         WebUI.scrollAtBottom(buttonSave);
-
+        //Related To
+//        WebUI.clickElement(dropdownRelatedTo);
+//        WebUI.clickElement(getValueRelatedTo(taskData.getRelatedTo()));
+//        WebUI.clickElement(dropdownTypeRelatedTo);
+//        WebUI.setTextElement(inputSearchTypeRelatedTo, taskData.getTypeRelatedTo());
+//        WebUI.sleep(1);
+//        WebUI.actionClickBase(inputSearchTypeRelatedTo, Keys.END, " ").build().perform();
+//        WebUI.clickElement(getValueTypeRelatedTo(taskData.getTypeRelateTo()));
 
         WebUI.clickElement(dropdownRepeatTo);
-        WebUI.clickElement(getValueRepeatTo(relatedTo));
+        WebUI.clickElement(getValueRepeatTo(taskData.getRelatedTo()));
 
 
         WebUI.clickElement(dropdownValueForRepeatTo);
-        WebUI.setTextElement(inputSearchValueForRepeatTo, typeRelatedTo);
+        WebUI.setTextElement(inputSearchValueForRepeatTo, taskData.getTypeRelatedTo());
         WebUI.sleep(2);
         WebUI.setTextElement(inputSearchValueForRepeatTo, " ");
-        WebUI.clickElement(getValueForRepeatTo(typeRelatedTo));
+        WebUI.clickElement(getValueForRepeatTo(taskData.getTypeRelatedTo()));
         WebUI.sleep(2);
-
-//        WebUI.clickElement(dropdownValueForRepeatTo);
-//        WebUI.setTextElement(inputSearchValueForRepeatTo, typeRelatedTo);
-//        WebUI.sleep(1);
-//        Actions actions = new Actions(driver);
-//        actions.click(WebUI.getWebElement(inputSearchValueForRepeatTo)).sendKeys(" ").build().perform();
-//        WebUI.clickElement(getValueForRepeatTo(typeRelatedTo));
-//        WebUI.sleep(2);
-
 
         //Assignees
         WebUI.clickElement(dropdownAssignees);
-        List<WebElement> selectedAssignees = WebUI.getWebElements(listSelectedDropdownAssignees);
-        for (WebElement cb : selectedAssignees) {
-            cb.click();
-        }
-        WebUI.clickElement(labelAssignees);
-
-
-        WebUI.clickElement(dropdownAssignees);
-        WebUI.setTextElement(inputSearchAssignees, assignee);
-        WebUI.clickElement(getValueAssignees(assignee));
+        WebUI.setTextElement(inputSearchAssignees, taskData.getAssignee());
+        WebUI.clickElement(getValueAssignees(taskData.getAssignee()));
 
         //Followers
         WebUI.clickElement(dropdownFollowers);
-        List<WebElement> selectedFollowers = WebUI.getWebElements(listSelectedDropdownFollowers);
-        for (WebElement cb : selectedFollowers) {
-            cb.click();
-        }
-        WebUI.clickElement(labelFollowers);
-
-
+        WebUI.setTextElement(inputSearchFollowers, taskData.getFollower());
+        WebUI.clickElement(getValueFollowers(taskData.getFollower()));
         WebUI.clickElement(dropdownFollowers);
-        WebUI.setTextElement(inputSearchFollowers, follower);
-        WebUI.clickElement(getValueFollowers(follower));
 
+        //input
+        WebUI.setTextAndKeyElement(inputTag, taskData.getTag(), Keys.ENTER);
+        WebUI.clickElement(labelTag);
+        WebUI.clickElement(labelTag);
 
-        // Tag
-        WebUI.clickElement(inputTag);
-        List<WebElement> allOptions = WebUI.getWebElements(listdropdownTag);
-        for (WebElement option : allOptions) {
-            if (option.getText().equals(tag)) {
-                option.click();   // click vào WebElement tìm được
-                break;            // thoát vòng lặp sau khi click
-            }
-        }
+        //iframe
+        WebUI.clickElement(inputDescription);
+        WebUI.switchToFrame(iframeDescription);
+        WebUI.setTextElement(inputDescriptionFrame, taskData.getDescription());
+        WebUI.switchToParentFrame();
 
 
         // Check sau khi save có lỗi required không
@@ -323,28 +336,40 @@ public class TasksPage {
 
     }
 
+
+
     public void clickButtonSave(){
         WebUI.clickElement(buttonSave);
         WebUI.sleep(1);
     }
 
 
-
     public void clickClosePopupTaskDetail(String taskName, int flagEdit) {
         WebUI.scrollAtTop(iconClosePopupTaskDetail(taskName));
         WebUI.clickElement(iconClosePopupTaskDetail(taskName));
+        WebUI.sleep(2);
     }
 
 
+    public void clickIconCloseAddTaskMessage() {
+        WebUI.clickElement(iconCloseAddTaskSuccessMessage);
+    }
 
-    public void searchTasks(String tasksName){
+
+    public void clickIconCloseUpdateTaskMessage() {
+        WebUI.clickElement(iconCloseUpdateTaskSuccessMessage);
+    }
+
+
+    public void searchTasks(String taskName) {
         DriverManager.getDriver().navigate().refresh();
+        WebUI.waitForPageLoaded();
+        WebUI.setTextElement(inputSearchTasks, taskName);
         WebUI.sleep(1);
-        WebUI.setTextElement(inputSearch, tasksName);
+    }
 
-
-        Assert.assertTrue(WebUI.checkExistsElement(getFirstRowItemTaskName(tasksName), 2),
-                "Không đúng giá trị vừa thêm mới");
+    public void verifyTaskExists(String taskName) {
+        Assert.assertTrue(WebUI.checkExistsElement(getFirstRowItemTaskName(taskName)), "Không đúng giá trị vừa thêm mới");
         WebUI.sleep(1);
     }
 
@@ -360,50 +385,32 @@ public class TasksPage {
         Assert.assertTrue(checked, "FAILED: Checkbox [" + checked + "] chưa được chọn.");
     }
 
-
-    public void verifyEditTask(String subject, String hourlyRate, String startDate, String dueDate, String priority, String repeatEvery,
-                                      String totalCycles, String relatedTo,
-                                      String typeRelatedTo, String assignee, String follower, String tag){
-
-        WebElement firstRows = WebUI.getWebElement(firstRow);
-        // B2: Hover chuột vào dòng đầu tiên
-        Actions actions = new Actions(DriverManager.getDriver());
-        actions.moveToElement(firstRows).perform();
-        WebUI.sleep(3);
+    public void clickButtonEdit(String taskName) {
+        WebUI.moveToElement(getFirstRowItemTaskName(taskName));
+        WebUI.sleep(0.5);
+        WebUI.clickElement(buttonEdit(taskName));
+        WebUI.sleep(0.5);
+    }
 
 
-        WebUI.clickElement(linkEdit);
+    public void verifyEditTask(TaskDTO taskData){
 
-        //    verifyCheckboxSelected(LocatorsTasksCRM.checkboxPublic);
-        //   verifyCheckboxSelected(checkboxBillable);
-//        compareFieldAttribute(subject, inputSubject, "value");
-//        compareFieldAttribute(hourlyRate, inputHourlyRate, "value");
-//        compareFieldAttribute(startDate, inputStartDate, "value");
-//        compareFieldAttribute(dueDate, inputDueDate, "value");
-//        compareFieldAttribute(priority, dropdownPrioryty, "title");
-//        compareFieldAttribute(repeatEvery, dropdownRepeatEvery, "title");
-//    //    verifyCheckboxSelected(checkboxInfinity);
-//        compareFieldAttribute(totalCycles, inputTotalCycles, "value");
-//        compareFieldAttribute(relatedTo, dropdownRepeatTo, "title");
-//        compareFieldAttribute(typeRelatedTo, dropdownValueForRepeatTo, "title");
-//        compareFieldAttribute(tag, LocatorsTasksCRM.inputEditTag, "value");
-
-        compareFieldAttribute(subject, inputSubject, "value");
-        compareFieldAttribute(hourlyRate, inputHourlyRate, "value");
-        compareFieldAttribute(startDate, inputStartDate, "value");
-        compareFieldAttribute(dueDate, inputDueDate, "value");
-        compareFieldAttribute(priority, dropdownPrioryty, "title");
-        compareFieldAttribute(repeatEvery, dropdownRepeatEvery, "title");
-        compareFieldAttribute(totalCycles, inputTotalCycles, "value");
-        compareFieldAttribute(relatedTo, dropdownRepeatTo, "title");
-        compareFieldAttribute(typeRelatedTo, dropdownValueForRepeatTo, "title");
+        compareFieldAttribute(taskData.getTaskName(), inputSubject, "value");
+       // compareFieldAttribute(taskData.getHourlyRate(), inputHourlyRate, "value");
+        compareFieldAttribute(taskData.getStartDate(), inputStartDate, "value");
+        compareFieldAttribute(taskData.getDueDate(), inputDueDate, "value");
+        compareFieldAttribute(taskData.getPriority(), dropdownPriority, "title");
+        compareFieldAttribute(taskData.getRepeatEvery(), dropdownRepeatEvery, "title");
+        compareFieldAttribute(taskData.getTotalCycles(), inputTotalCycles, "value");
+        compareFieldAttribute(taskData.getRelatedTo(), dropdownRepeatTo, "title");
+        compareFieldAttribute(taskData.getTypeRelatedTo(), dropdownValueForRepeatTo, "title");
         //   compareFieldAttribute(tag, LocatorsTasksCRM.inputEditTag, "value");
 
     }
 
 
-    public void editTasks (String subject, String hourlyRate, String startDate, String dueDate, String priority, String repeatEvery,
-                                  String relatedTo, String typeRelatedTo, String tag, String description){
+
+    public void editTasks (TaskDTO taskData){
 
         Actions actions = new Actions(DriverManager.getDriver());
       //  Robot robot = new Robot();
@@ -422,68 +429,57 @@ public class TasksPage {
 
         WebUI.actionClick(inputSubject);
         WebUI.clearTextElement(inputSubject);
-        WebUI.actionSendKeys(inputSubject, subject);
+        WebUI.actionSendKeys(inputSubject, taskData.getTaskName());
 
         WebUI.actionClick(inputHourlyRate);
         WebUI.clearTextElement(inputHourlyRate);
-        WebUI.actionSendKeys(inputHourlyRate, hourlyRate);
-      //  Thread.sleep(1000);
+        WebUI.actionSendKeys(inputHourlyRate, taskData.getHourlyRate());
+
 
         WebUI.actionClick(inputStartDate);
         WebUI.clearTextElement(inputStartDate);
-        WebUI.actionSendKeys(inputStartDate, startDate);
-      //  Thread.sleep(1000);
+        WebUI.actionSendKeys(inputStartDate, taskData.getStartDate());
 
         WebUI.actionClick(inputDueDate);
         WebUI.clearTextElement(inputDueDate);
-        WebUI.actionSendKeys(inputDueDate, dueDate);
-      //  Thread.sleep(1000);
+        WebUI.actionSendKeys(inputDueDate, taskData.getDueDate());
 
-        WebUI.actionClick(dropdownPrioryty);
-        WebUI.actionClick(getValuePrioryty(priority));
-      //  Thread.sleep(1000);
-
+        WebUI.actionClick(dropdownPriority);
+        WebUI.actionClick(getValuePriority(taskData.getPriority()));
 
         WebUI.actionClick(dropdownRepeatEvery);
-        WebUI.actionClick(getValueRepeatEvery(repeatEvery));
-      //  Thread.sleep(1000);
+        WebUI.actionClick(getValueRepeatEvery(taskData.getRepeatEvery()));
 
 
         WebUI.scrollAtTop(buttonSave);
-     //   Thread.sleep(1000);
-
 
         WebUI.actionClick(dropdownRepeatTo);
-        WebUI.actionClick(getValueRepeatTo(relatedTo));
+        WebUI.actionClick(getValueRepeatTo(taskData.getRelatedTo()));
 
 
         WebUI.actionClick(dropdownValueForRepeatTo);
-        WebUI.setTextAndKeyElement(inputSearchValueForRepeatTo, typeRelatedTo, Keys.ENTER);
+        WebUI.setTextAndKeyElement(inputSearchValueForRepeatTo, taskData.getTypeRelatedTo(), Keys.ENTER);
         WebUI.sleep(1);
         WebUI.setTextElement(inputSearchValueForRepeatTo, " ");
-        WebUI.actionClick(getValueForRepeatTo(typeRelatedTo));
+        WebUI.actionClick(getValueForRepeatTo(taskData.getTypeRelatedTo()));
 
 
         //tag
         WebUI.actionClick(iconCloseTag);
-        WebUI.actionSendKeys(inputTag, tag);
+        WebUI.actionSendKeys(inputTag, taskData.getTag());
         WebUI.actionClick(labelTag);
         WebUI.sleep(1);
         WebUI.actionClick(labelTag);
 
 
         //iframe
-        WebUI.clickElement(inputDescription);
-        WebUI.sleep(1);
-        DriverManager.getDriver().switchTo().frame("description_ifr");
-
-        WebElement iframeDescriptions = WebUI.getWebElement(iframeDescription);
-        iframeDescriptions.sendKeys(description);
-        WebUI.sleep(2);
-        DriverManager.getDriver().switchTo().parentFrame();
-        WebUI.sleep(2);
+        WebUI.switchToFrame(iframeDescription);
+        WebUI.sleep(0.5);
+        WebUI.actionSendKeys(inputDescriptionFrame, taskData.getDescription());
+        WebUI.sleep(0.5);
+        WebUI.switchToParentFrame();
+        WebUI.sleep(0.5);
 
     }
-
 
 }

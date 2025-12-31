@@ -5,6 +5,7 @@ package pages;
 import common.BasePage;
 import drivers.DriverManager;
 import keywords.WebUI;
+import models.LeadDTO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -282,25 +283,23 @@ public class LeadsPage extends BasePage{
 
     }
 
-    public void fillDataLeads(String status, String source, String assigned, String tag, String name, String address, String position,
-                                     String city, String emailAddress, String state, String website, String country, String phone, String zipCode,
-                                     String leadValue, String language, String company, String description, String dateContacted, int flag, int flagEdit){
+    public void fillDataLeads(LeadDTO lead){
 
 
         WebUI.clickElement(dropdownStatus);
-        WebUI.setTextElement(inputSearchStatus, status);
-        WebUI.clickElement(getValueStatus(status));
+        WebUI.setTextElement(inputSearchStatus, lead.getStatus());
+        WebUI.clickElement(getValueStatus(lead.getStatus()));
 
 
         WebUI.clickElement(dropdownSource);
-        WebUI.setTextElement(inputSearchSource, source);
-        WebUI.clickElement(getValueSource(source));
+        WebUI.setTextElement(inputSearchSource, lead.getSource());
+        WebUI.clickElement(getValueSource(lead.getSource()));
 
         WebUI.clickElement(dropdownAssigned);
-        WebUI.setTextElement(inputSearchAssigned, assigned);
-        WebUI.clickElement(getValueAssigned(assigned));
+        WebUI.setTextElement(inputSearchAssigned, lead.getAssigned());
+        WebUI.clickElement(getValueAssigned(lead.getAssigned()));
 
-        if (flagEdit == 1) {
+        if (lead.getFlagEdit() == 1) {
             WebUI.clickElement(iconCloseTag);
             WebUI.clearTextElement(inputName);
           //  WebUI.clearTextElement(inputAddress);
@@ -325,43 +324,43 @@ public class LeadsPage extends BasePage{
 
         }
 
-        WebUI.setTextAndKeyElement(inputTag,tag, Keys.ENTER);
+        WebUI.setTextAndKeyElement(inputTag,lead.getTag(), Keys.ENTER);
         WebUI.clickElement(labelTag);
         WebUI.clickElement(labelTag);
 
-        WebUI.setTextElement(inputName, name);
+        WebUI.setTextElement(inputName, lead.getLeadName());
        // WebUI.setTextElement(inputAddress, address);
-        WebUI.setTextElement(inputPosition, position);
-        WebUI.setTextElement(inputCity, city);
-        WebUI.setTextElement(inputEmailAddress, emailAddress);
-        WebUI.setTextElement(inputState, state);
-        WebUI.setTextElement(inputWebsite, website);
+        WebUI.setTextElement(inputPosition, lead.getPosition());
+        WebUI.setTextElement(inputCity, lead.getCity());
+        WebUI.setTextElement(inputEmailAddress, lead.getEmailAddress());
+        WebUI.setTextElement(inputState, lead.getState());
+        WebUI.setTextElement(inputWebsite, lead.getWebsite());
 
         WebUI.clickElement(dropdownCountry);
-        WebUI.setTextElement(inputSearchCountry, country);
-        WebUI.clickElement(getValueCountry(country));
+        WebUI.setTextElement(inputSearchCountry, lead.getCountry());
+        WebUI.clickElement(getValueCountry(lead.getCountry()));
 
-        WebUI.setTextElement(inputPhone, phone);
-        WebUI.setTextElement(inputZipCode, zipCode);
-        WebUI.setTextElement(inputLeadValue, leadValue);
+        WebUI.setTextElement(inputPhone, lead.getPhone());
+        WebUI.setTextElement(inputZipCode, lead.getZipCode());
+        WebUI.setTextElement(inputLeadValue, lead.getLeadValue());
 
         WebUI.clickElement(dropdownDefaultLanguage);
-        WebUI.setTextElement(inputSearchDefaultLanguage, language);
-        WebUI.clickElement(getValueDefaultLanguage(language));
+        WebUI.setTextElement(inputSearchDefaultLanguage, lead.getLanguage());
+        WebUI.clickElement(getValueDefaultLanguage(lead.getLanguage()));
 
-        WebUI.setTextElement(inputCompany, company);
-        WebUI.setTextElement(inputDescription, description);
+        WebUI.setTextElement(inputCompany, lead.getCompany());
+        WebUI.setTextElement(inputDescription, lead.getDescription());
 
        WebUI.clickElement(labelCheckboxPublic);
 
-        if (flagEdit == 0) {
+        if (lead.getFlagEdit() == 0) {
             WebUI.clickElement(labelCheckboxContactedToday);
-            WebUI.setTextElement(inputDateContacted, dateContacted);
+            WebUI.setTextElement(inputDateContacted, lead.getDateContacted());
             WebUI.clickElement(labelPhone);
             WebUI.clickElement(labelPhone);
         } else {
             WebUI.clearTextElement(inputLastContacted);
-            WebUI.setTextElement(inputLastContacted, dateContacted);
+            WebUI.setTextElement(inputLastContacted, lead.getDateContacted());
             WebUI.clickElement(labelPhone);
             WebUI.clickElement(labelPhone);
         }
@@ -405,6 +404,19 @@ public class LeadsPage extends BasePage{
         WebUI.sleep(1);
     }
 
+    public void verifyAddLeadSuccessMessage() {
+        WebUI.sleep(0.5);
+        Assert.assertTrue(WebUI.checkExistsElement(addLeadSuccessMessage, 2),
+                "The success message for adding a lead is not displayed");
+    }
+
+    public void verifyUpdateLeadSuccessMessage() {
+        WebUI.sleep(0.5);
+        Assert.assertTrue(WebUI.checkExistsElement(updateLeadSuccessMessage, 2),
+                "The success message for updating a lead is not displayed");
+    }
+
+
 
     public void clickIconClosePopupLeadDetail(String name, int flagEdit){
         WebUI.scrollAtTop(iconClosePopupLeadDetail(name));
@@ -412,18 +424,18 @@ public class LeadsPage extends BasePage{
         WebUI.sleep(1);
     }
 
-    public void searchLeads(String leadsName){
-
+    public void searchLeads(String leadsName) {
         DriverManager.getDriver().navigate().refresh();
-        WebUI.sleep(2);
+        WebUI.waitForPageLoaded();
         WebUI.clearTextElement(inputSearch);
         WebUI.setTextElement(inputSearch, leadsName);
         WebUI.sleep(2);
-        WebUI.waitForElementVisible(getFirstRowItemLeadName(leadsName));
-        WebUI.sleep(2);
+//        WebUI.waitForElementVisible(getFirstRowItemLeadName(leadsName));
+//        WebUI.sleep(2);
+    }
 
+    public void checkLeadsExists(String leadsName) {
         Assert.assertTrue(WebUI.checkExistsElement(getFirstRowItemLeadName(leadsName), 2), "Không đúng giá trị Lead vừa thêm mới");
-        WebUI.sleep(1);
     }
 
     public void compareFieldAttribute(String expectedValue, By by, String attributeType) {
@@ -445,13 +457,7 @@ public class LeadsPage extends BasePage{
         WebUI.sleep(1);
     }
 
-    public void verifyEditLead(
-            String status, String source, String assigned, String tag,String name, String address,
-            String position, String city, String emailAddress,
-            String state, String website, String country, String phone,
-            String zipCode, String leadValue, String language, String company,
-            String description, String dateContacted
-    ){
+    public void verifyEditLead(LeadDTO lead){
 
         // verify đã vào được màn Edit hay chưa
         List<WebElement> profileTabs = WebUI.getWebElements(tabProfile);
@@ -466,36 +472,33 @@ public class LeadsPage extends BasePage{
 //        Assert.assertTrue(actualTitledit.contains(name), "FAILED: Tiêu đề popup không chứa tên Lead! Mở sai pop-up Lead edit hoặc chưa mở được popup edit.");
 
 
-        compareFieldAttribute(status, dropdownStatus, "title");
-        compareFieldAttribute(source, dropdownSource, "title");
-        compareFieldAttribute(assigned, dropdownAssigned, "title");
+        compareFieldAttribute(lead.getStatus(), dropdownStatus, "title");
+        compareFieldAttribute(lead.getSource(), dropdownSource, "title");
+        compareFieldAttribute(lead.getAssigned(), dropdownAssigned, "title");
         // compareFieldAttribute(tag, inputEditTag, "value");
-        compareFieldAttribute(name, inputName, "value");
+        compareFieldAttribute(lead.getLeadName(), inputName, "value");
        // compareFieldAttribute(address, inputAddress, "value");
-        compareFieldAttribute(position, inputPosition, "value");
-        compareFieldAttribute(city, inputCity, "value");
-        compareFieldAttribute(emailAddress, inputEmailAddress, "value");
-        compareFieldAttribute(state, inputState, "value");
-        compareFieldAttribute(website, inputWebsite, "value");
-        compareFieldAttribute(country, dropdownCountry, "title");
-        compareFieldAttribute(phone, inputPhone, "value");
-        compareFieldAttribute(zipCode, inputZipCode, "value");
-        compareFieldAttribute(leadValue + ".00", inputLeadValue, "value");
-        compareFieldAttribute(language, dropdownDefaultLanguage, "title");
-        compareFieldAttribute(company, inputCompany, "value");
-        compareFieldAttribute(description, inputDescription, "value");
-        compareFieldAttribute(dateContacted, inputLastContacted, "value");
+        compareFieldAttribute(lead.getPosition(), inputPosition, "value");
+        compareFieldAttribute(lead.getCity(), inputCity, "value");
+        compareFieldAttribute(lead.getEmailAddress(), inputEmailAddress, "value");
+        compareFieldAttribute(lead.getState(), inputState, "value");
+        compareFieldAttribute(lead.getWebsite(), inputWebsite, "value");
+        compareFieldAttribute(lead.getCountry(), dropdownCountry, "title");
+        compareFieldAttribute(lead.getPhone(), inputPhone, "value");
+        compareFieldAttribute(lead.getZipCode(), inputZipCode, "value");
+        compareFieldAttribute(lead.getLeadValue() + ".00", inputLeadValue, "value");
+        compareFieldAttribute(lead.getLanguage(), dropdownDefaultLanguage, "title");
+        compareFieldAttribute(lead.getCompany(), inputCompany, "value");
+        compareFieldAttribute(lead.getDescription(), inputDescription, "value");
+        compareFieldAttribute(lead.getDateContacted(), inputLastContacted, "value");
         //verifyCheckboxSelected(checkboxPublic);
     }
 
     public void clickButtonDelete(String leadName){
-
-
         WebElement firstRowDelete = WebUI.getWebElement(firstRow);
         Actions actions = new Actions(DriverManager.getDriver());
         actions.moveToElement(firstRowDelete).perform();
         WebUI.sleep(2);
-
         WebUI.clickElement(linkDelete);
 
     }
@@ -506,6 +509,15 @@ public class LeadsPage extends BasePage{
     }
 
 
+    public void verifyAfterDeleteLead(String leadName){
+     //   Assert.assertFalse(WebUI.checkExistsElement(getFirstRowItemLeadName(leadName), 2), "Xóa Lead không thành công");
+
+        Assert.assertFalse(WebUI.checkExistsElement(getFirstRowItemLeadName(leadName)), "Xóa Lead không thành công");
+
+        //Assert.assertFalse(checkExistsElement(LocatorsLeadsCRM.getFirstRowItemLeadName(leadName)), "Xóa Lead không thành công");
+        WebUI.sleep(1);
+        System.out.println("Không tìm thấy Lead '" + leadName + "' trong kết quả tìm kiếm.");
+    }
 
 }
 

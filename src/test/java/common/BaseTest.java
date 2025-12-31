@@ -2,11 +2,14 @@ package common;
 
 
 import drivers.DriverManager;
+import helpers.CaptureHelper;
 import helpers.PropertiesHelper;
+import helpers.SystemHelper;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 
@@ -26,16 +29,16 @@ public class BaseTest {
 
         //Nếu file properties có giá trị, nó sẽ ưu tiên lấy giá trị từ file properties
         //Nếu file properties không có giá trị hoặc bị null, nó sẽ lấy giá trị browserName
-        if(PropertiesHelper.getValue("browser").isEmpty() || PropertiesHelper.getValue("browser") == null){
-            browserName = browserName;
-        }else {
+//        if(PropertiesHelper.getValue("browser").isBlank() || PropertiesHelper.getValue("browser") == null){
+//            browserName = browserName;
+//        }else {
+//            browserName = PropertiesHelper.getValue("browser");
+//        }
+
+        if (PropertiesHelper.getValue("browser") != null && !PropertiesHelper.getValue("browser").isBlank()) {
             browserName = PropertiesHelper.getValue("browser");
         }
 
-        //Nếu như PropertiesHelper khác rỗng và khác null (nghĩa là có giá trị) --> sẽ đọc data từ properties
-//        if(!(PropertiesHelper.getValue("browser").isEmpty()) || !(PropertiesHelper.getValue("browser") != null)){
-//            browserName = PropertiesHelper.getValue("browser");
-//        }
 
         WebDriver driver; //Khai báo driver cục bộ
 
@@ -65,7 +68,17 @@ public class BaseTest {
     }
 
     @AfterMethod
-    public void closeDriver(){
+    public void closeDriver(ITestResult result){
+
+        // Khởi tạo đối tượng result thuộc ITestResult để lấy trạng thái và tên của từng Step
+        // Ở đây sẽ so sánh điều kiện nếu testcase passed hoặc failed
+        // passed = SUCCESS và failed = FAILURE
+        if (ITestResult.FAILURE == result.getStatus()){
+            CaptureHelper.takeScreenshot(result.getName() + "_" + SystemHelper.getDateTimeNowFormat());
+        }
+
+        CaptureHelper.stopRecord();
+
         if(DriverManager.getDriver() != null){
             DriverManager.quit();
         }

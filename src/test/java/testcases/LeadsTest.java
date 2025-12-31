@@ -1,226 +1,175 @@
 package testcases;
 
 import common.BaseTest;
+import models.LeadDTO;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.DashboardPage;
 import pages.LeadsPage;
 import pages.LoginPage;
+import provider.DataProviderFactory;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LeadsTest extends BaseTest {
-    String status = "Active";
-    String source = "Google";
-    String assigned = "Admin Anh Tester";
-    String tag = "JSC_NEW";
-    String leadName = "Yến Nhi 1";
-    String address = "Đại Linh";
-    String position = "Tester";
-    String city = "Việt Nam";
-    String emailAddress = "ngocnhi1@gmail.com";
-    String state = "Hà Nội";
-    String website = "htester.com.vn";
-    String country = "Vietnam";
-    String phone = "0965898989";
-    String zipCode = "0001";
-    String leadValue = "12345";
-    String language = "Vietnamese";
-    String company = "NODO JSC";
-    String description = "htest add new lead";
-    String dateContacted = "10-11-2025 00:00:00";
-    int flag = 1;
-    int flagEdit = 0;
-
     private LoginPage loginPage;
     private LeadsPage leadsPage;
     private DashboardPage dashboardPage;
 
-
-    @Test(priority = 1)
-    public void testAddAndVerifyLead(){
+    //@Test(priority = 1)
+    @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
+    public void testAddAndVerifyLead(LeadDTO leadData){
         loginPage = new LoginPage();
 
         // loginPage.loginCRM();
         //dashboardPage = new DashboardPage();
-       // dashboardPage.(....)
+        // dashboardPage.(....)
         dashboardPage = loginPage.loginCRM();
         // khi gọi loginPage.loginCRM(): nghĩa là hàm loginCRM() sẽ đc chạy và khởi tạo trang DashboardPage (do có câu lệnh return new DashboardPage())
         // dashboardPage = ... --> lấy đối tượng dashboardPage hứng nhận sự khởi tạo đó từ login
         // --> Nghĩa là : Khi login xong sẽ trả về trang dashboard, rồi từ gàm dashborard gọi hàm thao tác tiếp tục trong trang Dashboard mà k cần khởi tạo độc lập
         // Khi login thành công, dashboard mới mang giá trị để đi tiếp. Nếu login k thành công, dashboard sẽ k có giá trị để khởi tạo
 
-
         leadsPage = dashboardPage.clickMenuLead();
-        LeadsTest leadsTest = new LeadsTest();
 
-        leadsTest.leadName = "Yến Nhi 1";
-        leadsTest.emailAddress = "ngocnhi1@gmail.com";
+        String dateTimeAdd = new SimpleDateFormat("_ddMMyyyy_HHmmss").format(new Date());
+        leadData.setLeadName(leadData.getLeadName() + dateTimeAdd);
+        leadData.setEmailAddress(leadData.getEmailAddress() + dateTimeAdd + "@gmail.com");
 
         leadsPage.clickIconLeadsSummary();
         leadsPage.verifyLeadSummaryDisplay();
         leadsPage.verifyBtnAddNewLead();
-
-        leadsPage.fillDataLeads(status, source, assigned, tag, leadsTest.leadName, address, position, city,
-                leadsTest.emailAddress, state, website, country, phone, zipCode, leadValue, language,
-                company, description, dateContacted,flag, flagEdit);
-
+        leadsPage.fillDataLeads(leadData);
         leadsPage.verifyEmailResult(true, "");
         leadsPage.clickButtonSave();
-        leadsPage.clickIconClosePopupLeadDetail(leadsTest.leadName, 0);
-        leadsPage.searchLeads(leadsTest.leadName);
+        leadsPage.verifyAddLeadSuccessMessage();
+        leadsPage.clickIconClosePopupLeadDetail(leadData.getLeadName(), 0);
+        leadsPage.searchLeads(leadData.getLeadName());
     }
 
 
-    @Test(priority = 2)
-    public void testVerifyEditLead(){
+    @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
+    public void testVerifyEditLead(LeadDTO leadData){
         loginPage = new LoginPage();
         dashboardPage = loginPage.loginCRM();
         leadsPage = dashboardPage.clickMenuLead();
-        LeadsTest leadsTest = new LeadsTest();
 
-        leadsTest.leadName = "Yến Nhi 2";
-        leadsTest.emailAddress = "ngocnhi2@gmail.com";
+      //  String dateTimeAdd = new SimpleDateFormat("_ddMMyyyy_HHmmss").format(new Date());
+        leadData.setLeadName("Yến Nhi 2");
+        leadData.setEmailAddress("ngocnhi2@gmail.com");
 
         leadsPage.clickIconLeadsSummary();
         leadsPage.verifyLeadSummaryDisplay();
         leadsPage.verifyBtnAddNewLead();
-
-        leadsPage.fillDataLeads(status, source, assigned, tag, leadsTest.leadName, address, position, city,
-                leadsTest.emailAddress, state, website, country, phone, zipCode, leadValue, language,
-                company, description, dateContacted,flag, flagEdit);
-
+        leadsPage.fillDataLeads(leadData);
         leadsPage.verifyEmailResult(true, "");
         leadsPage.clickButtonSave();
-        leadsPage.clickIconClosePopupLeadDetail(leadsTest.leadName, 0);
-        leadsPage.searchLeads(leadsTest.leadName);
-        leadsPage.clickButtonEdit(leadsTest.leadName);
-
-        leadsPage.verifyEditLead(status, source, assigned, tag, leadsTest.leadName, address, position, city,
-                leadsTest.emailAddress, state, website, country, phone, zipCode, leadValue, language,
-                company, description, dateContacted);
-
+        leadsPage.verifyAddLeadSuccessMessage();
+        leadsPage.clickIconClosePopupLeadDetail(leadData.getLeadName(), 0);
+        leadsPage.searchLeads(leadData.getLeadName());
+        leadsPage.checkLeadsExists(leadData.getLeadName());
+        leadsPage.clickButtonEdit(leadData.getLeadName());
+        leadsPage.verifyEditLead(leadData);
 
     }
 
-
-    @Test(priority = 3)
-    public void testEditLead(){
+    @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
+    public void testEditLead(LeadDTO leadData){
         loginPage = new LoginPage();
         dashboardPage = loginPage.loginCRM();
         leadsPage = dashboardPage.clickMenuLead();
-        LeadsTest leadsTest = new LeadsTest();
 
-        leadsTest.leadName = "Yến Nhi 3";
-        leadsTest.emailAddress = "ngocnhi3@gmail.com";
+        //  String dateTimeAdd = new SimpleDateFormat("_ddMMyyyy_HHmmss").format(new Date());
+        leadData.setLeadName("Yến Nhi 3");
+        leadData.setEmailAddress("ngocnhi3@gmail.com");
 
         leadsPage.clickIconLeadsSummary();
         leadsPage.verifyLeadSummaryDisplay();
         leadsPage.verifyBtnAddNewLead();
-
-        leadsPage.fillDataLeads(status, source, assigned, tag, leadsTest.leadName, address, position, city,
-                leadsTest.emailAddress, state, website, country, phone, zipCode, leadValue, language,
-                company, description, dateContacted,flag, flagEdit);
-
+        leadsPage.fillDataLeads(leadData);
         leadsPage.verifyEmailResult(true, "");
         leadsPage.clickButtonSave();
-        leadsPage.clickIconClosePopupLeadDetail(leadsTest.leadName,0);
-        leadsPage.searchLeads(leadsTest.leadName);
-        leadsPage.clickButtonEdit(leadsTest.leadName);
+        leadsPage.verifyAddLeadSuccessMessage();
+        leadsPage.clickIconClosePopupLeadDetail(leadData.getLeadName(), 0);
+        leadsPage.searchLeads(leadData.getLeadName());
+        leadsPage.checkLeadsExists(leadData.getLeadName());
+        leadsPage.clickButtonEdit(leadData.getLeadName());
+        leadsPage.verifyEditLead(leadData);
 
-        leadsPage.verifyEditLead(status, source, assigned, tag, leadsTest.leadName, address, position, city,
-                leadsTest.emailAddress, state, website, country, phone, zipCode, leadValue, language,
-                company, description, dateContacted);
+        LeadDTO leadDataEdit = new LeadDTO(leadData);
 
-        leadsTest.status = "Active";
-        leadsTest.source = "Facebook";
-        leadsTest.assigned = "Admin Anh Tester";
-        leadsTest.tag = "JSC_NEW";
-        leadsTest.leadName = "Yến Nhi 3";
-        leadsTest.address = "Thanh Oai";
-        leadsTest.position = "Tester";
-        leadsTest.city = "Việt Nam";
-        leadsTest.emailAddress = "ngocnhi3@gmail.com";
-        leadsTest.state = "Hà Nội";
-        leadsTest.website = "htester.com.vn";
-        leadsTest.country = "Vietnam";
-        leadsTest.phone = "0965898989";
-        leadsTest.zipCode = "777";
-        leadsTest.leadValue = "8888";
-        leadsTest.language = "Vietnamese";
-        leadsTest.company = "NODO JSC";
-        leadsTest.description = "htest add new lead";
-        leadsTest.dateContacted = "10-11-2025 00:00:00";
-        leadsTest.flag = 0;
-        leadsTest.flagEdit = 1;
+        leadDataEdit.setLeadName("Yến Nhi 3");
+        leadDataEdit.setEmailAddress("ngocnhi3@gmail.com");
+        leadDataEdit.setPhone("0965898989");
+        leadDataEdit.setZipCode("98765");
+        leadDataEdit.setFlag(0);
+        leadDataEdit.setFlagEdit(1);
 
-        leadsPage.fillDataLeads(leadsTest.status, leadsTest.source, leadsTest.assigned, leadsTest.tag, leadsTest.leadName, leadsTest.address, leadsTest.position, leadsTest.city,
-                leadsTest.emailAddress, leadsTest.state, leadsTest.website, leadsTest.country, leadsTest.phone, leadsTest.zipCode, leadsTest.leadValue, leadsTest.language,
-                leadsTest.company, leadsTest.description, leadsTest.dateContacted,leadsTest.flag, leadsTest.flagEdit);
-
+        leadsPage.fillDataLeads(leadDataEdit);
         leadsPage.clickButtonSave();
-        leadsPage.clickIconClosePopupLeadDetail(leadsTest.leadName,0);
-        leadsPage.searchLeads(leadsTest.leadName);
+        leadsPage.verifyUpdateLeadSuccessMessage();
+        leadsPage.clickIconClosePopupLeadDetail(leadDataEdit.getLeadName(), 0);
+        leadsPage.searchLeads(leadDataEdit.getLeadName());
+        leadsPage.checkLeadsExists(leadDataEdit.getLeadName());
 
     }
 
 
-    @Test(priority = 4)
-    public void testDeleteLead(){
+    @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
+    public void testDeleteLead(LeadDTO leadData){
         loginPage = new LoginPage();
         dashboardPage = loginPage.loginCRM();
         leadsPage = dashboardPage.clickMenuLead();
-        LeadsTest leadsTest = new LeadsTest();
 
-        leadsTest.leadName = "Yến Nhi 4";
-        leadsTest.emailAddress = "ngocnhi4@gmail.com";
+        //  String dateTimeAdd = new SimpleDateFormat("_ddMMyyyy_HHmmss").format(new Date());
+        leadData.setLeadName("Yến Nhi 4");
+        leadData.setEmailAddress("ngocnhi4@gmail.com");
 
         leadsPage.clickIconLeadsSummary();
         leadsPage.verifyLeadSummaryDisplay();
         leadsPage.verifyBtnAddNewLead();
-
-        leadsPage.fillDataLeads(status, source, assigned, tag, leadsTest.leadName, address, position, city,
-                leadsTest.emailAddress, state, website, country, phone, zipCode, leadValue, language,
-                company, description, dateContacted,flag, flagEdit);
-
+        leadsPage.fillDataLeads(leadData);
         leadsPage.verifyEmailResult(true, "");
         leadsPage.clickButtonSave();
-        leadsPage.clickIconClosePopupLeadDetail(leadsTest.leadName, 0);
-        leadsPage.searchLeads(leadsTest.leadName);
-        leadsPage.clickButtonDelete(leadsTest.leadName);
+        leadsPage.verifyAddLeadSuccessMessage();
+        leadsPage.clickIconClosePopupLeadDetail(leadData.getLeadName(), 0);
+        leadsPage.searchLeads(leadData.getLeadName());
+        leadsPage.checkLeadsExists(leadData.getLeadName());
+
+        leadsPage.clickButtonDelete(leadData.getLeadName());
         leadsPage.confirmAlertDelete();
+        leadsPage.searchLeads(leadData.getLeadName());
+        leadsPage.verifyAfterDeleteLead(leadData.getLeadName());
 
     }
 
-
-    @Test(priority = 5)
-    public void testAddAndVerifyActive(){
+    @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
+    public void testAddAndVerifyActive(LeadDTO leadData){
         loginPage = new LoginPage();
         dashboardPage = loginPage.loginCRM();
         leadsPage = dashboardPage.clickMenuLead();
+
+        //  String dateTimeAdd = new SimpleDateFormat("_ddMMyyyy_HHmmss").format(new Date());
 
         leadsPage.clickIconLeadsSummary();
         leadsPage.verifyLeadSummaryDisplay();
 
         int totalActiveBeforeAdd = Integer.parseInt(leadsPage.getTotalLeadTotalActive());
 
-        LeadsTest leadsTest = new LeadsTest();
+        leadData.setLeadName("Yến Nhi 5");
+        leadData.setEmailAddress("ngocnhi5@gmail.com");
 
-        leadsTest.leadName = "Yến Nhi 5";
-        leadsTest.emailAddress = "ngocnhi5@gmail.com";
-//
-//        leadsPage.clickIconLeadsSummary();
-//       leadsPage.verifyLeadSummaryDisplay();
         leadsPage.verifyBtnAddNewLead();
-
-        leadsPage.fillDataLeads(status, source, assigned, tag, leadsTest.leadName, address, position, city,
-                leadsTest.emailAddress, state, website, country, phone, zipCode, leadValue, language,
-                company, description, dateContacted,flag, flagEdit);
-
+        leadsPage.fillDataLeads(leadData);
         leadsPage.verifyEmailResult(true, "");
         leadsPage.clickButtonSave();
-        leadsPage.clickIconClosePopupLeadDetail(leadName, 0);
-        leadsPage.searchLeads(leadName);
-        leadsPage.clickIconLeadsSummary();
+        leadsPage.verifyAddLeadSuccessMessage();
+        leadsPage.clickIconClosePopupLeadDetail(leadData.getLeadName(), 0);
+        leadsPage.searchLeads(leadData.getLeadName());
+        leadsPage.checkLeadsExists(leadData.getLeadName());
 
+        leadsPage.clickIconLeadsSummary();
         int totalActiveAfterAdd = Integer.parseInt(leadsPage.getTotalLeadTotalActive());
 
         System.out.println("Before = " + totalActiveBeforeAdd);
@@ -229,5 +178,4 @@ public class LeadsTest extends BaseTest {
         Assert.assertEquals(totalActiveAfterAdd, totalActiveBeforeAdd + 1, "Số lượng status Active không khớp");
 
     }
-
 }

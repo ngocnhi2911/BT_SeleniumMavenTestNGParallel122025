@@ -4,11 +4,14 @@ import drivers.DriverManager;
 import helpers.PropertiesHelper;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
@@ -297,6 +300,7 @@ public class WebUI {
         System.out.println("Set text " + text + " on element: " + by);
     }
 
+
     public static void setTextAndKeyElement(By by, String text, Keys key) {
         sleep(STEP_TIME);
         waitForElementVisible(by);
@@ -365,6 +369,7 @@ public class WebUI {
         WebElement element = DriverManager.getDriver().findElement(locator);
         actions.moveToElement(element).click().sendKeys(text).perform();
     }
+
 
     //Chờ đợi trang load xong mới thao tác
 
@@ -464,6 +469,24 @@ public class WebUI {
         waitForPageLoaded();
         System.out.println("Assert equals: " + actual + " and " + expected);
         Assert.assertEquals(actual, expected, message);
+    }
+
+    public static void take_Screenshot(){
+        // Tạo tham chiếu của TakesScreenshot
+        TakesScreenshot ts = (TakesScreenshot) DriverManager.getDriver();
+        // Gọi hàm để chụp ảnh màn hình - getScreenshotAs
+        File source = ts.getScreenshotAs(OutputType.FILE);
+        // Kiểm tra folder tồn tại. Nếu không thì tạo mới folder theo đường dẫn
+        File theDir = new File("./screenshots/");
+        if (!theDir.exists()) {
+            theDir.mkdirs();
+        }
+        //Lưu file ảnh với tên cụ thể vào đường dẫn
+        try {
+            FileHandler.copy(source, new File("./screenshots/testHomePage1.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -26,10 +26,10 @@ public class PropertiesHelper {
 //        files.add("src/test/resources/configs/production.properties");
 
         try {
-            properties = new Properties();
+            properties = new Properties();  // Nếu k khởi tạo sẽ lỗi Null Point except, đại diện cho nhiều file
 
             for (String f : files) { // duyệt qua từng file
-                Properties tempProp = new Properties();
+                Properties tempProp = new Properties(); // chỉ đại diện cho 1 file properties (đại diện cho file f)
                 linkFile = SystemHelper.getCurrentDir() + f;
                 file = new FileInputStream(linkFile);  //FileInputStream: dùng đrr đọc file
                 tempProp.load(file);  //load file đó lên
@@ -41,7 +41,7 @@ public class PropertiesHelper {
         }
     }
 
-    // Đọc 1 file properties
+    // Đọc 1 file properties, mk có thể truyền đường dẫn vào
     public static void setFile(String relPropertiesFilePath) { //relPropertiesFilePath: đường dẫn cục bộ
         properties = new Properties();
         try {
