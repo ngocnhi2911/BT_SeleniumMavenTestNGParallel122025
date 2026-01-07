@@ -1,6 +1,10 @@
 package testcases;
 
 import common.BaseTest;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Link;
+import io.qameta.allure.Story;
 import models.LeadDTO;
 import models.TaskDTO;
 import org.testng.annotations.Test;
@@ -10,6 +14,8 @@ import pages.LoginPage;
 import pages.TasksPage;
 import provider.DataProviderFactory;
 
+@Feature("Tính năng thêm/sửa/xóa menu Task")
+@Story("Thêm/Sửa/Xóa menu Task")
 public class TasksTest extends BaseTest {
 
     private LoginPage loginPage;
@@ -18,6 +24,8 @@ public class TasksTest extends BaseTest {
     private LeadsPage leadsPage;
 
 
+    @Description("Kiểm tra thêm dữ liệu màn Task và so sánh lại với màn Edit Task")
+    @Link(name = "https://jira.anhtester.com/task/Task-01", url = "https://jira.anhtester.com/task/Task-01")
     @Test(dataProvider = "taskData", dataProviderClass = DataProviderFactory.class )
     public void testAddAndVerifyTask(TaskDTO taskData){
         loginPage = new LoginPage();
@@ -39,7 +47,8 @@ public class TasksTest extends BaseTest {
 
     }
 
-
+    @Description("Kiểm tra sửa dữ liệu màn Task")
+    @Link(name = "https://jira.anhtester.com/task/Task-02", url = "https://jira.anhtester.com/task/Task-02")
     @Test(dataProvider = "taskData", dataProviderClass = DataProviderFactory.class )
     public void testEditask(TaskDTO taskData){
 
@@ -73,6 +82,8 @@ public class TasksTest extends BaseTest {
 
     }
 
+    @Description("Kiểm tra add Lead - edit Lead - add Task - edit Task")
+    @Link(name = "https://jira.anhtester.com/task/Task-03", url = "https://jira.anhtester.com/task/Task-03")
     @Test(dataProvider = "leadTaskData", dataProviderClass = DataProviderFactory.class )
     public void testAddLeadAndTask(LeadDTO leadData, TaskDTO taskData){
 

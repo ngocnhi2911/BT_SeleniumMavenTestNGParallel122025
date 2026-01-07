@@ -26,8 +26,17 @@ public class DriverManager {
     }
 
     // remove: xóa đi luồng đó
+//    public static void quit() {
+//        DriverManager.driver.get().quit(); //quit(): dùng để tắt giá trị/reset giá trị driver về null
+//        driver.remove(); // xóa luôn giá trị Thread đó
+//    }
+
     public static void quit() {
-        DriverManager.driver.get().quit(); //quit(): dùng để tắt giá trị/reset giá trị driver về null
-        driver.remove(); // xóa luôn giá trị Thread đó
+        WebDriver driverInstance = driver.get();
+        if (driverInstance != null) {
+            driverInstance.quit();
+            driver.remove();
+        }
     }
+
 }

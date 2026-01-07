@@ -1,6 +1,10 @@
 package testcases;
 
 import common.BaseTest;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Link;
+import io.qameta.allure.Story;
 import models.LeadDTO;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -12,13 +16,17 @@ import provider.DataProviderFactory;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Feature("Tính năng thêm/sửa/xóa menu Lead")
+@Story("Thêm/Sửa/Xóa menu Lead")
 public class LeadsTest extends BaseTest {
     private LoginPage loginPage;
     private LeadsPage leadsPage;
     private DashboardPage dashboardPage;
 
     //@Test(priority = 1)
-    @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
+    @Description("Kiểm tra thêm dữ liệu màn Lead")
+    @Link(name = "https://jira.anhtester.com/lead/Lead-01", url = "https://jira.anhtester.com/lead/Lead-01")
+    @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class)
     public void testAddAndVerifyLead(LeadDTO leadData){
         loginPage = new LoginPage();
 
@@ -48,7 +56,8 @@ public class LeadsTest extends BaseTest {
         leadsPage.searchLeads(leadData.getLeadName());
     }
 
-
+    @Description("Kiểm tra thêm dữ liệu màn Lead và so sánh lại với màn Edit Lead")
+    @Link(name = "https://jira.anhtester.com/lead/Lead-02", url = "https://jira.anhtester.com/lead/Lead-02")
     @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
     public void testVerifyEditLead(LeadDTO leadData){
         loginPage = new LoginPage();
@@ -74,6 +83,8 @@ public class LeadsTest extends BaseTest {
 
     }
 
+    @Description("Kiểm tra sửa dữ liệu màn Lead")
+    @Link(name = "https://jira.anhtester.com/lead/Lead-03", url = "https://jira.anhtester.com/lead/Lead-03")
     @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
     public void testEditLead(LeadDTO leadData){
         loginPage = new LoginPage();
@@ -116,6 +127,8 @@ public class LeadsTest extends BaseTest {
     }
 
 
+    @Description("Kiểm tra xóa dữ liệu màn Lead")
+    @Link(name = "https://jira.anhtester.com/lead/Lead-04", url = "https://jira.anhtester.com/lead/Lead-04")
     @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
     public void testDeleteLead(LeadDTO leadData){
         loginPage = new LoginPage();
@@ -144,6 +157,8 @@ public class LeadsTest extends BaseTest {
 
     }
 
+    @Description("Kiểm tra số lượng Active trong Leads Summary có tăng lên sau khi thêm mới Lead với trạng thái Active")
+    @Link(name = "https://jira.anhtester.com/lead/Lead-05", url = "https://jira.anhtester.com/lead/Lead-05")
     @Test(dataProvider = "leadData", dataProviderClass = DataProviderFactory.class )
     public void testAddAndVerifyActive(LeadDTO leadData){
         loginPage = new LoginPage();

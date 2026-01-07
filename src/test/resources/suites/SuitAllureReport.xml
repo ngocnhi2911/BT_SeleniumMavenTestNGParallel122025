@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Suite Allure Report" verbose="1">
+    <test name="Demo Allure Report 1">
+        <classes>
+            <class name="testcases.LoginTest"></class>
+        </classes>
+    </test>
+
+    <test name="Demo Allure Report 2">
+        <classes>
+            <class name="testcases.LeadsTest"></class>
+        </classes>
+    </test>
+</suite>

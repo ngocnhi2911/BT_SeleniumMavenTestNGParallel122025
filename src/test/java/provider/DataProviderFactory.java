@@ -17,7 +17,7 @@ import java.util.List;
 
 public class DataProviderFactory {
 
-    @DataProvider(name = "leadData")
+    @DataProvider(name = "leadData", parallel = true)
     public static Object[][] leadData() {
 
         ExcelHelper excelHelper = new ExcelHelper();

@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
+import utils.LogUtils;
 
 import java.util.List;
 
@@ -39,10 +40,12 @@ public class LoginPage {
 
     private void enterEmail(String email) {
         WebUI.setTextElement(inputEmail, email);
+        LogUtils.info("Entered email: " + email);
     }
 
     private void enterPassword(String password) {
         WebUI.setTextElement(inputPassword, password);
+        LogUtils.info("Entered password: " + password);
     }
 
     private void clickButtonLogin() {
@@ -52,6 +55,7 @@ public class LoginPage {
 
     public void navigateToLoginPage(){
         WebUI.openURL(PropertiesHelper.getValue("url"));
+        LogUtils.info("Navigated to URL: " + PropertiesHelper.getValue("url"));
         WebUI.waitForPageLoaded();
     }
     public void loginCRM(String email, String password) {

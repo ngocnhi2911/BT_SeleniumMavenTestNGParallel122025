@@ -5,6 +5,7 @@ import drivers.DriverManager;
 import helpers.CaptureHelper;
 import helpers.PropertiesHelper;
 import helpers.SystemHelper;
+import listeners.TestListener;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -13,6 +14,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 
+@Listeners(TestListener.class)
 public class BaseTest {
     public SoftAssert softAssert;
 
@@ -73,11 +75,11 @@ public class BaseTest {
         // Khởi tạo đối tượng result thuộc ITestResult để lấy trạng thái và tên của từng Step
         // Ở đây sẽ so sánh điều kiện nếu testcase passed hoặc failed
         // passed = SUCCESS và failed = FAILURE
-        if (ITestResult.FAILURE == result.getStatus()){
-            CaptureHelper.takeScreenshot(result.getName() + "_" + SystemHelper.getDateTimeNowFormat());
-        }
+//        if (ITestResult.FAILURE == result.getStatus()){
+//            CaptureHelper.takeScreenshot(result.getName() + "_" + SystemHelper.getDateTimeNowFormat());
+//        }
 
-        CaptureHelper.stopRecord();
+      //  CaptureHelper.stopRecord();
 
         if(DriverManager.getDriver() != null){
             DriverManager.quit();
